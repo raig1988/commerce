@@ -75,7 +75,7 @@ def create_listing(request):
             image = form.cleaned_data['image']
             category = form.cleaned_data['category']
             chosen_category = Category.objects.filter(category=category).first()
-            inputdata = AuctionListing(title=title, description=description, start_price=start_price, image=image, category=chosen_category)
+            inputdata = AuctionListing(user=request.user, title=title, description=description, start_price=start_price, image=image, category=chosen_category)
             inputdata.save()
             return HttpResponseRedirect(reverse('index'))
     return render(request, "auctions/create_listing.html", { "form" : form })
@@ -88,7 +88,9 @@ def closed_listings(request):
 
 def listing(request, listing):
     selectedlisting = AuctionListing.objects.get(id=listing)
-    return render(request, "auctions/listing.html", {"listing" : selectedlisting, "form_status": UpdateStatus(), "form_comment": AddComment()})
+    listingComments = Comments.objects.filter(listing=selectedlisting).all()
+    return render(request, "auctions/listing.html", {"listing" : selectedlisting, 
+                        "form_status": UpdateStatus(), "form_comment": AddComment(), "comments" : listingComments})
 
 def watchlist_add(request, listing):
     item = get_object_or_404(AuctionListing, pk=listing)
@@ -102,7 +104,7 @@ def watchlist_add(request, listing):
     user_list.save()
     messages.add_message(request, messages.SUCCESS, "Added to your watchlist.")
     return HttpResponseRedirect(reverse("watchlist"))
-    
+
 def watchlist(request):
     watchlist = Watchlist.objects.get(user=request.user)
     select = watchlist.auction.all()
@@ -147,5 +149,3 @@ def add_comment(request, listing):
             addcomment.save()
             return HttpResponseRedirect(reverse('listing', kwargs={'listing' : listing}))
     return HttpResponseRedirect(reverse('listing', kwargs={'listing' : listing}))
-
-

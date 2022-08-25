@@ -14,8 +14,6 @@ class User(AbstractUser):
     pass
 # Already inherits from AbstractUser, fields like username, email, password, etc but you can add new fields if desired.
 
-user = User.objects.get(id=1)
-
 class Category(models.Model):
     category = models.CharField(max_length=50, unique=True)
 
@@ -42,7 +40,7 @@ class Watchlist(models.Model):
         return f"{self.user} - Watchlist item {self.auction}"
 
 class Comments(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=user.id)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     comment = models.TextField()
     listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
 
@@ -56,3 +54,4 @@ class BidPrice(models.Model):
 
     def __str__(self):
         return f"{self.user} bid on {self.listing} : {self.last_bid}"
+

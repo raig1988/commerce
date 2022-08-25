@@ -51,11 +51,17 @@
         {{ form_status.as_div }}
         <input type="submit">
     </form>
-    <form method="post" action="{% url 'add_comment listing.id %}">
+    <form method="post" action="{% url 'add_comment' listing.id %}">
         {% csrf_token %}
         {{ form_comment.as_div }}
         <input type="submit">
     </form>
+    {% endif %}
+    {% if comments %}
+        {% for comment in comments %}
+        <h2>{{ comment.user }}</h2>
+        <p>{{ comment.comment }}</p>
+        {% endfor %}
     {% endif %}
 {% else %}
     <h1>No listing selected</h1>
