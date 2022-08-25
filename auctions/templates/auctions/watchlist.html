@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %} Watchlist {% endblock %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+{% if watchlist %}
+    {% for item in watchlist %}
+        <h1><a href="{% url 'listing' item.id %}">{{ item.title }}</a></h1>
+        <h1>{{ item.start_price }}</h1>
+        <h1>{{ item.category }}</h1>
+    {% endfor %}
+{% else %}
+    <h1>No items added to Watchlist</h1>
+
+{% endif %}
+{% endif %}
+
+{% endblock %}

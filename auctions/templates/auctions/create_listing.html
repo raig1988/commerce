@@ -1,0 +1,17 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %} Create Listing {% endblock %}
+
+{% block body %}
+
+    {% if user.is_authenticated %}
+    <div class="container">
+        <form action="{% url 'create_listing' %}" method="post">
+        {% csrf_token %}
+            {{ form.as_div }}
+            <input type="submit">
+        </form>
+    </div>
+    {% endif %}
+
+{% endblock %}

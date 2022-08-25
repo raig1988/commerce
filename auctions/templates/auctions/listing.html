@@ -1,0 +1,63 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %} {{ listing.title }} {% endblock %}
+
+{% block body %}
+
+{% if listing %}
+<div class="container">
+<div class="row">
+    <h1>{{ listing.title }}</h1>
+</div>
+<div class="row">
+    <h2>{{ listing.category }}</h2>
+</div>
+<div class="row">
+    <p>{{ listing.description }}</p>
+</div>
+<div class="row">
+    {% if BidPrice.last_bid %}
+    <h2>{{ BidPrice.last_bid }}</h2>
+    {% else %}
+    <div class="row">
+        <h2>{{ listing.start_price }}</h2>
+        <br/>
+    </div>
+    {% endif %}
+</div>
+<div class="row">
+    <img src="/{{ listing.image }}">
+</div>
+</div>
+    {% if user.is_authenticated %}
+    <div class="container">
+    <form method="post" action="{% url 'set_bid' listing.id %}">
+        {% csrf_token %}
+        <div class="row">
+            <input type="number" min="{{ listing.start_price }}" name="last_bid">
+            <input type="submit">
+    </form>
+    </div>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <a href="{% url 'watchlist_add' listing.id %}" role="button">Add to watchlist</a>
+    <form method="post" action="{% url 'change_status' listing.id %}">
+        {% csrf_token %}
+        {{ form_status.as_div }}
+        <input type="submit">
+    </form>
+    <form method="post" action="{% url 'add_comment listing.id %}">
+        {% csrf_token %}
+        {{ form_comment.as_div }}
+        <input type="submit">
+    </form>
+    {% endif %}
+{% else %}
+    <h1>No listing selected</h1>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %} Active listings {% endblock %}
+
+{% block body %}
+
+{% if active_listings %}
+<div class="container">
+    {% for listing in active_listings %}
+        {% if listing.status == "Active" %}
+            <div class="row">
+                <h1><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h1>
+            </div>
+            <div class="row">
+                <h2>{{ listing.category }}</h2>
+            </div>
+            <div class="row">
+                <p>{{ listing.description }}</p>
+            </div>
+            <div class="row">
+                <h2>{{ listing.start_price }}</h2>
+            </div>
+            <div class="row">
+                <img src="/{{ listing.image }}">
+            </div>
+        {% else %}
+        <h1> No current active listings </h1>
+        {% endif %}
+    {% endfor %}
+</div>
+{% else %}
+    <h1> No listings created yet</h1>
+{% endif %}
+
+{% endblock %}
