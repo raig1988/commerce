@@ -11,7 +11,7 @@ from .forms import AddComment, CreateListingForm, UpdateStatus
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {"active_listings" : AuctionListing.objects.all()})
 
 def login_view(request):
     if request.method == "POST":
@@ -67,21 +67,18 @@ def register(request):
 def create_listing(request):
     form = CreateListingForm()
     if request.method == "POST":
-        form = CreateListingForm(request.POST)
+        form = CreateListingForm(request.POST, request.FILES)
         if form.is_valid():
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
             start_price = form.cleaned_data['start_price']
-            image = form.cleaned_data['image']
+            image = form.cleaned_data.get('image')
             category = form.cleaned_data['category']
             chosen_category = Category.objects.filter(category=category).first()
-            inputdata = AuctionListing(user=request.user, title=title, description=description, start_price=start_price, image=image, category=chosen_category)
+            inputdata = AuctionListing.objects.create(user=request.user, title=title, description=description, start_price=start_price, image=image, category=chosen_category)
             inputdata.save()
             return HttpResponseRedirect(reverse('index'))
     return render(request, "auctions/create_listing.html", { "form" : form })
-
-def active_listings(request):
-    return render(request, "auctions/active_listings.html", {"active_listings" : AuctionListing.objects.all()})
 
 def closed_listings(request):
     return render(request, "auctions/closed_listings.html", {"closed_listings" : AuctionListing.objects.all(), "BidPrice" : BidPrice.objects.all()})
@@ -149,3 +146,11 @@ def add_comment(request, listing):
             addcomment.save()
             return HttpResponseRedirect(reverse('listing', kwargs={'listing' : listing}))
     return HttpResponseRedirect(reverse('listing', kwargs={'listing' : listing}))
+
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, "auctions/categories.html", {"categories" : categories})
+
+def category(request, category):
+    category_listings = AuctionListing.objects.filter(category=category)
+    return render(request, "auctions/category.html", {"category_listings" : category_listings})

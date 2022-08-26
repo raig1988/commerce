@@ -1,44 +1,38 @@
 {% extends "auctions/layout.html" %}
-
+{% load my_filters %}
 {% block title %} Closed listings {% endblock %}
-
 {% block body %}
-
-{% if closed_listings %}
-<div class="container">
-    {% for listing in closed_listings %}
-        {% if listing.status == "Closed" %}
-            <div class="row">
-                <h1><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h1>
+    <div class="container">
+    <h1 class="mb-3">Closed Listings</h1>
+    {% if closed_listings %}
+        <div class="row row-cols-4 g-4">
+        {% for listing in closed_listings %}
+            {% if listing.status == "Closed" %}
+            <div class="col">
+                <div class="card text-center h-100 border-dark" style="width: 18rem;">
+                    <img src="/{{ listing.image }}" class="card-img-top" alt="auction image">
+                    <div class="card-body">
+                        <h1 class="card-title"><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h1>
+                        <h3 class="card-subtitle mb-2 text-muted">{{ listing.category }}</h2>
+                        <p class="card-text">{{ listing.description }}</p>
+                        <h3 class="text-muted">{{ listing.start_price | currency }}</h2>
+                        {% for bid in BidPrice %}
+                            {% if listing == bid.listing %}
+                                {% if user == bid.user %}
+                                    {% if bid.last_bid == listing.start_price %}
+                                        <h3 class="card-footer border-success"> {{ bid.user }} won this auction </h3>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <h2>{{ listing.category }}</h2>
-            </div>
-            <div class="row">
-                <p>{{ listing.description }}</p>
-            </div>
-            <div class="row">
-                <h2>{{ listing.start_price }}</h2>
-            </div>
-            <div class="row">
-                <img src="/{{ listing.image }}">
-            </div>
-            {% for bid in BidPrice %}
-                {% if listing == bid.listing %}
-                    {% if user == bid.user %}
-                        {% if bid.last_bid == listing.start_price %}
-                            <h1> {{ bid.user }} won this auction </h1>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <h1> No current closed listings </h1>
-        {% endif %}
-    {% endfor %}
-</div>
-{% else %}
-    <h1> No listings created yet</h1>
-{% endif %}
-
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    {% else %}
+        <h1> No current closed listings</h1>
+    {% endif %}
 {% endblock %}

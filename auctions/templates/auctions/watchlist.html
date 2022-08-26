@@ -1,20 +1,39 @@
 {% extends "auctions/layout.html" %}
+{% load my_filters %}
 
 {% block title %} Watchlist {% endblock %}
 
 {% block body %}
-
+<div class="container">
+    <h1 class="mb-3">Watchlist</h1>
 {% if user.is_authenticated %}
 {% if watchlist %}
+    <div class="row row-cols-4 g-4">
     {% for item in watchlist %}
-        <h1><a href="{% url 'listing' item.id %}">{{ item.title }}</a></h1>
-        <h1>{{ item.start_price }}</h1>
-        <h1>{{ item.category }}</h1>
+        <div class="col">
+            <div class="card text-center h-100 border-dark" style="width: 18rem;">
+                <img src="{{ item.image }}" class="card-img-top" alt="auction image">
+                <div class="card-body">
+                    <h1 class="card-title"><a href="{% url 'listing' item.id %}">{{ item.title }}</a></h1>
+                    <h3 class="card-subtitle mb-2 text-muted">{{ item.category }}</h1>
+                    <h2 class="text-muted">{{ item.start_price | currency }}</h1>
+                    <a class="btn btn-secondary" href="{% url 'watchlist_add' item.id %}" role="button">Remove from watchlist</a>
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     {% endfor %}
+    </div>
 {% else %}
     <h1>No items added to Watchlist</h1>
 
 {% endif %}
 {% endif %}
-
+</div>
 {% endblock %}

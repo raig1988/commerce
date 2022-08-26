@@ -5,7 +5,7 @@ choices_category = Category.objects.values_list('category','category')
 
 class CreateListingForm(forms.Form):
     title = forms.CharField(label="Title", max_length=50)
-    description = forms.CharField(label="Description", widget=forms.Textarea)
+    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'class': 'description'}))
     start_price = forms.FloatField(label="Start bid price", min_value=0, required=True)
     image = forms.ImageField(label="Auction image", required=False)
     category = forms.ChoiceField(label="Category", choices=choices_category)

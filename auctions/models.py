@@ -25,7 +25,7 @@ class AuctionListing(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField()
     start_price = models.FloatField(max_length=20)
-    image = models.FileField(upload_to='uploads', null=True)
+    image = models.ImageField(upload_to='auctions/files/', null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="categories")
     status = models.CharField(max_length=20, choices=status_choices, default=active)
 

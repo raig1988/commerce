@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+{% load my_filters %}
+
+{% block title %} Category {% endblock %}
+
+{% block body %}
+<div class="container">
+<h1 class="mb-4">Category: "{{ category_listings.first.category }}"</h1>
+{% if category_listings %}
+    <div class="row row-cols-4 g-4">
+        {% for listing in category_listings %}
+        <div class="col">
+            <div class="card text-center h-100 border-dark" style="width: 18rem;">
+                <img src="/{{ listing.image }}" class="card-img-top" alt="auction image">
+                <div class="card-body">
+                    <h1 class="card-title"><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h1>
+                    <h2 class="card-subtitle mb-2 text-muted">{{ listing.category }}</h2>
+                    <h2 class="text-muted">{{ listing.start_price | currency }}</h2>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <h1>No listing in this category</h1>
+{% endif %}
+</div>
+{% endblock %}

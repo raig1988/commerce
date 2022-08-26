@@ -1,7 +1,29 @@
 {% extends "auctions/layout.html" %}
+{% load my_filters %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-
-    TODO
+    <div class="container">
+    <h1 class="mb-3">Active Listings</h1>
+    {% if active_listings %}
+        <div class="row row-cols-4 g-4">
+        {% for listing in active_listings %}
+            {% if listing.status == "Active" %}
+            <div class="col">
+                <div class="card text-center h-100 border-dark" style="width: 18rem;">
+                    <img src="{{ listing.image }}" class="card-img-top" alt="auction image">
+                    <div class="card-body">
+                        <h1 class="card-title"><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h1>
+                        <h3 class="card-subtitle mb-2 text-muted">{{ listing.category }}</h3>
+                        <p class="card-text">{{ listing.description }}</p>
+                        <h3 class="text-muted">{{ listing.start_price | currency }}</h2>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    {% else %}
+        <h1> No listings created yet</h1>
+    {% endif %}
 {% endblock %}
